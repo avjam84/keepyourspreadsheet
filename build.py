@@ -2,6 +2,8 @@
 """Static generator for KeepYourSpreadsheet. Run: python3 build.py <base_url>"""
 import sys, os, json, html, shutil
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "https://example.invalid").rstrip("/")
+from urllib.parse import urlparse
+PREFIX = urlparse(BASE).path.rstrip("/")  # e.g. /keepyourspreadsheet on GitHub project pages
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 CHECKED = "14 Oct 2026"
 NAME = "KeepYourSpreadsheet"
@@ -42,7 +44,7 @@ def render(path, title, desc, body, faq):
             {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faq]})
         body += "<h2>Questions</h2>" + "".join(f"<h3>{html.escape(q)}</h3><p>{html.escape(a)}</p>" for q, a in faq)
     ldh = "".join(f'<script type="application/ld+json">{json.dumps(x)}</script>' for x in ld)
-    return f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    out = f"""<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}"><link rel="canonical" href="{BASE}{path}">
 <meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(desc)}"><meta property="og:type" content="website">
 <link rel="stylesheet" href="/style.css">{ldh}</head><body>
@@ -50,6 +52,7 @@ def render(path, title, desc, body, faq):
 <main><div class="w">{body}</div></main>
 <footer><div class="w"><p><strong>Not tax advice.</strong> Independent site, not affiliated with HMRC or any software provider. No affiliate links yet. Facts last checked {CHECKED}; see the <a href="/changelog/">changelog</a>. <a href="/about/">About</a> · <a href="/newsletter/">Newsletter</a></p></div></footer>
 </body></html>"""
+    return out.replace('href="/', f'href="{PREFIX}/').replace("href='/", f"href='{PREFIX}/")
 
 GOV_GUIDE = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/before-you-use-this-guide"
 GOV_SOFT = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
