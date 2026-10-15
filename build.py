@@ -5,7 +5,7 @@ BASE = (sys.argv[1] if len(sys.argv) > 1 else "https://example.invalid").rstrip(
 from urllib.parse import urlparse
 PREFIX = urlparse(BASE).path.rstrip("/")  # e.g. /keepyourspreadsheet on GitHub project pages
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
-CHECKED = "14 Oct 2026"
+CHECKED = "15 Oct 2026"
 NAME = "KeepYourSpreadsheet"
 
 def src(url, label=None):
@@ -55,7 +55,9 @@ def render(path, title, desc, body, faq):
     return out.replace('href="/', f'href="{PREFIX}/').replace("href='/", f"href='{PREFIX}/")
 
 GOV_GUIDE = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/before-you-use-this-guide"
-GOV_SOFT = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
+GOV_SOFT = "https://www.gov.uk/guidance/choose-the-right-software-for-making-tax-digital-for-income-tax"
+GOV_FINDER = "https://www.tax.service.gov.uk/find-making-tax-digital-income-tax-software/"
+GOV_PEN_REQ = "https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax"
 GOV_PEN = "https://www.gov.uk/guidance/penalties-for-income-tax-self-assessment-volunteers"
 HMRC_PR = "https://www.mynewsdesk.com/uk/hm-revenue-customs-hmrc/pressreleases/six-months-to-go-sole-traders-and-landlords-earning-more-than-30000-pounds-urged-to-act-now-3470794"
 
@@ -90,7 +92,7 @@ TOOLS = [
       points=["Spreadsheet bridging software for self-employed, landlords and VAT, per the vendor.",
               "Vendor says it works with Excel and also Google Sheets, Apple Numbers, LibreOffice and OpenOffice.",
               "Vendor says it only reads the summary figures HMRC needs and does not store your underlying data.",
-              "We could not find the price on the vendor homepage on 14 Oct 2026, so we have not listed one."]),
+              f"We could not find the price on the vendor homepage (last looked {CHECKED}), so we have not listed one."]),
  dict(slug="clear-books-free", name="Clear Books Sole Trader Free", url="https://www.clearbooks.co.uk/pricing/", kind="Accounting (free plan)", price="Free; paid Sole Trader plan £5/month + VAT",
       free=True, files="Records kept in the app (not a spreadsheet bridge)", yearend="Year-end filing included on the free plan",
       points=["Sole Trader Free includes MTD Income Tax quarterly updates and year-end filing, per the vendor's pricing page.",
@@ -100,14 +102,14 @@ TOOLS = [
 ]
 
 for t in TOOLS:
-    body = f"<h1>{t['name']}: MTD for Income Tax review</h1>{DISCLAIMER}<table><tr><th>Type</th><td>{t['kind']}</td></tr><tr><th>Price</th><td>{t['price']}</td></tr><tr><th>Works with</th><td>{t['files']}</td></tr><tr><th>Year-end return</th><td>{t['yearend']}</td></tr></table><h2>What we verified</h2><ul>" + "".join(f"<li>{html.escape(p)}</li>" for p in t["points"]) + f"</ul>{src(t['url'], t['name'] + ' (vendor page)')}<p>Always confirm a product appears in <a href='{GOV_SOFT}'>HMRC's software finder</a> before signing up.</p><p><a href='/compare/'>← Compare all tools</a></p>"
+    body = f"<h1>{t['name']}: MTD for Income Tax review</h1>{DISCLAIMER}<table><tr><th>Type</th><td>{t['kind']}</td></tr><tr><th>Price</th><td>{t['price']}</td></tr><tr><th>Works with</th><td>{t['files']}</td></tr><tr><th>Year-end return</th><td>{t['yearend']}</td></tr></table><h2>What we verified</h2><ul>" + "".join(f"<li>{html.escape(p)}</li>" for p in t["points"]) + f"</ul>{src(t['url'], t['name'] + ' (vendor page)')}<p>Always confirm a product appears in <a href='{GOV_FINDER}'>HMRC's software finder</a> before signing up.</p><p><a href='/compare/'>← Compare all tools</a></p>"
     page(f"/tools/{t['slug']}/", f"{t['name']} for Making Tax Digital: price & features (checked {CHECKED})",
          f"{t['name']} for MTD Income Tax: {t['price']}. Verified on the vendor's own page {CHECKED}.", body)
 
 rows = "".join(f"<tr><td><a href='/tools/{t['slug']}/'>{t['name']}</a></td><td>{t['kind']}</td><td><span class='tag{'' if t['free'] else ' paid'}'>{'FREE' if t['free'] else 'PAID/?'}</span> {t['price']}</td><td>{t['files']}</td><td>{t['yearend']}</td><td><a href='{t['url']}' rel='nofollow noopener'>vendor page</a></td></tr>" for t in TOOLS)
 page("/compare/", "MTD bridging software compared: keep your spreadsheet (Oct 2026)",
-     "Side-by-side comparison of spreadsheet bridging tools and free plans for Making Tax Digital for Income Tax. Every price checked on the vendor's page on 14 Oct 2026.",
-     f"<h1>Keep your spreadsheet: MTD tools compared</h1>{DISCLAIMER}<p>Bridging software links the spreadsheet you already keep to HMRC. GOV.UK confirms you can keep using spreadsheets if you use software that links to them.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}<div class='tw'><table><tr><th>Tool</th><th>Type</th><th>Price</th><th>Works with</th><th>Year-end return</th><th>Source</th></tr>{rows}</table></div><p class='src'>All rows last checked {CHECKED} on each vendor's own page. Where we could not verify something, we say so rather than guess.</p>",
+     f"Side-by-side comparison of spreadsheet bridging tools and free plans for Making Tax Digital for Income Tax. Every price checked on the vendor's page on {CHECKED}.",
+     f"<h1>Keep your spreadsheet: MTD tools compared</h1>{DISCLAIMER}<p>Bridging software links the spreadsheet you already keep to HMRC. GOV.UK confirms you can keep using spreadsheets if you use software that links to them.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}<div class='tw'><table><tr><th>Tool</th><th>Type</th><th>Price</th><th>Works with</th><th>Year-end return</th><th>Source</th></tr>{rows}</table></div><p class='src'>All rows last checked {CHECKED} on each vendor's own page. Where we could not verify something, we say so rather than guess.</p><h2>How many bridging tools does HMRC list?</h2><p>On 15 Oct 2026, HMRC's software finder showed <strong>78</strong> products under \"Bridging software that connects to records\" for sole traders and landlords, and <strong>22</strong> of those when also filtered to \"Free version\". HMRC shows results in random order and does not recommend any of them. We add tools to the table above only after checking the vendor's own page.</p>{src(GOV_FINDER,'HMRC: Find software that works with Making Tax Digital for Income Tax')}",
      [("Can I keep using a spreadsheet for Making Tax Digital?", "Yes. GOV.UK says you can continue to use spreadsheets, but you need software that links to them (bridging software) to send quarterly updates and your tax return."),
       ("What is bridging software?", "Software that connects your existing records, such as a spreadsheet, to HMRC so you can send quarterly updates without moving to full accounting software.")])
 
@@ -133,15 +135,25 @@ page("/deadlines/", "MTD for Income Tax deadlines 2026/27: quarterly update date
      [("When is the next MTD quarterly update due?", "The second quarterly update for 2026/27 is due by 7 November 2026, according to GOV.UK."),
       ("Is a quarterly update a tax return?", "No. GOV.UK says quarterly updates are totals of your self-employment and property income and expenses; they are summaries, not tax returns.")])
 
-page("/penalties/", "MTD for Income Tax penalties: points, soft landing and what changes in 2027",
-     "How Making Tax Digital late submission penalty points work, the 2026/27 soft landing for quarterly updates, and the 4-point threshold from 2027/28. From GOV.UK.",
-     f"""<h1>MTD penalties explained</h1>{DISCLAIMER}
-<h2>2026/27: no points for late quarterly updates</h2><p>HMRC will not apply penalty points for late quarterly updates for the 2026 to 2027 tax year. You still need to send them before you can submit your tax return.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}
-<h2>From 2027/28 for people required to use MTD</h2><ul><li>Late submission penalties apply if you miss quarterly update deadlines.</li><li>The penalty point threshold is 4 points.</li></ul>
-<h2>How the points system works (as described for volunteers)</h2><ul><li>Late submissions earn a penalty point; reaching the threshold triggers a £200 penalty, and £200 each time you miss another deadline.</li><li>Late payment penalties are separate and depend on how late you pay.</li></ul>{src(GOV_PEN,'GOV.UK: Penalties for MTD for Income Tax volunteers')}
-<p>GOV.UK has a separate page for people required to use MTD from April 2026; we link to the volunteers page because that is the one we checked.</p>""",
-     [("Will I get a penalty for a late quarterly update in 2026/27?", "GOV.UK says HMRC will not apply penalty points for late quarterly updates for the 2026 to 2027 tax year, though you still need to send them."),
-      ("How many penalty points before a fine from 2027/28?", "GOV.UK says for people required to use MTD from 2027 to 2028 onwards, the penalty point threshold is 4 points and late quarterly updates count.")])
+page("/penalties/", "MTD for Income Tax penalties 2026/27: points, £200 fines and late payment %",
+     "Making Tax Digital penalties from GOV.UK: no penalties for late quarterly updates in 2026/27, a 4-point threshold with £200 fines, and late payment penalties of 3% or 4% plus 10% a year.",
+     f"""<h1>MTD for Income Tax penalties explained</h1>{DISCLAIMER}
+<p>This page covers people <strong>required</strong> to use Making Tax Digital for Income Tax from April 2026. Volunteers have slightly different rules (see the end of this page).</p>
+<h2>When the new penalties start</h2><ul><li>The new late submission and late payment penalties replace the old Self Assessment ones from the tax year you join MTD.</li><li>Earlier years keep the old penalties. For example, if you join on 6 April 2026, the old penalties still apply to your 2025 to 2026 tax return due 31 January 2027.</li><li>They do not apply to partnership, trust or estate, or non-resident company returns. How late payment interest works does not change.</li></ul>
+<h2>2026/27: no penalties for late quarterly updates</h2><p>There are no penalties for missing a quarterly update deadline in the 2026 to 2027 tax year. You still need to keep digital records and send your quarterly updates before you can submit your tax return. The tax return deadline still counts.</p>
+<h2>Late submission: penalty points</h2><ul><li>You get one penalty point for each missed tax return deadline, and, for tax years after 2026 to 2027, each missed quarterly update deadline.</li><li>The threshold is <strong>4 points</strong>. When you reach it you get a <strong>£200 penalty</strong>, and another £200 each time you miss a further submission deadline.</li><li>You only get one point per deadline, even if you have more than one business and send more than one update late.</li><li>MTD for Income Tax points are separate from any VAT penalty points.</li></ul>
+<h2>Late payment penalties</h2><div class="tw"><table><tr><th>How late you pay</th><th>For 2026 to 2027</th><th>For 2027 to 2028</th></tr>
+<tr><td>Up to 15 days</td><td>No penalty</td><td>No penalty</td></tr>
+<tr><td>16 to 30 days</td><td>3% of the tax owed at day 15, or no penalty if it's your first year</td><td>4% of the tax owed at day 15, or no penalty if it's your first year</td></tr>
+<tr><td>31 days or more</td><td>3% at day 15 and 3% at day 30, plus 10% a year on the outstanding amount, charged daily from day 31 until paid (up to 2 years)</td><td>4% at day 15 and 4% at day 30, plus 10% a year on the outstanding amount, charged daily from day 31 until paid (up to 2 years)</td></tr></table></div>
+<ul><li>In your first year of the new penalties you have 30 days from the due date to pay in full or contact HMRC to set up a payment plan. After that it drops to 15 days, and you only get the 30-day period once.</li><li>Late payment penalties do not apply to payments on account. Late payment interest is charged from the first day you are late.</li><li>If HMRC agrees a payment plan and you stick to it, penalties are paused from the date you contacted them.</li></ul>
+<h2>Getting points removed</h2><ul><li>Below 4 points, each point is removed automatically 24 months after the missed deadline.</li><li>At 4 points, they are only removed once you have sent your updates and tax return on time for 12 months and sent anything outstanding from the previous 24 months.</li></ul>
+{src(GOV_PEN_REQ,'GOV.UK: Penalties for Making Tax Digital for Income Tax')}
+<h2>If you volunteered for MTD</h2><p>For volunteers, the penalty point threshold is 2 points, with a £200 penalty at the threshold and for each further missed deadline. If you are later required to use MTD, late quarterly updates start to count and your threshold rises from 2 points to 4.</p>{src(GOV_PEN,'GOV.UK: Penalties for MTD for Income Tax volunteers')}""",
+     [("Will I get a penalty for a late quarterly update in 2026/27?", "No. GOV.UK says there are no penalties for missing a quarterly update deadline for the 2026 to 2027 tax year, but you still need to send your quarterly updates before you can submit your tax return."),
+      ("How many penalty points before a fine under MTD for Income Tax?", "GOV.UK says the threshold is 4 points for people required to use MTD. Reaching it means a £200 penalty, and £200 for each further missed submission deadline."),
+      ("What is the MTD late payment penalty?", "According to GOV.UK, nothing if you pay within 15 days. For 2026/27 tax it is 3% of the tax owed at day 15 and 3% at day 30, plus 10% a year from day 31; for 2027/28 those rise to 4%. In your first year you get 30 days before penalties start."),
+      ("Do I get a penalty point for each business?", "No. GOV.UK says you only get one penalty point per deadline, even if you have more than one business and send more than one quarterly update late.")])
 
 page("/does-hmrc-have-a-free-tool/", "Does HMRC have a free Making Tax Digital tool? No — here's what is free",
      "HMRC does not provide its own software for Making Tax Digital for Income Tax. GOV.UK confirms it. Here are verified free third-party options instead.",
@@ -152,7 +164,7 @@ page("/does-hmrc-have-a-free-tool/", "Does HMRC have a free Making Tax Digital t
       ("Does HMRC recommend any MTD software?", "No. GOV.UK says HMRC does not recommend any product or software provider.")])
 
 page("/free-via-bank/", "Free MTD software through your business bank (FreeAgent via NatWest, Mettle)",
-     "How to get FreeAgent free for Making Tax Digital with a NatWest, RBS, Ulster Bank or Mettle business account, and the conditions. Checked on FreeAgent's page 14 Oct 2026.",
+     f"How to get FreeAgent free for Making Tax Digital with a NatWest, RBS, Ulster Bank or Mettle business account, and the conditions. Checked on FreeAgent's page {CHECKED}.",
      f"""<h1>Free MTD software through your bank</h1>{DISCLAIMER}
 <h2>FreeAgent with NatWest, Royal Bank of Scotland, Ulster Bank or Mettle</h2><ul>
 <li>NatWest, Royal Bank of Scotland or Ulster Bank business account holders are entitled to a free FreeAgent account for as long as they keep the bank account.</li>
@@ -174,7 +186,12 @@ page("/about/", "About KeepYourSpreadsheet and our 'not tax advice' notice", "Wh
 <h2>Money</h2><p>There are no affiliate links or sponsors yet. If that changes, we'll label them clearly and it won't change what we list.</p><p>Spotted an error? Corrections are logged in the changelog. A contact address will be added soon.</p>""")
 
 page("/changelog/", "Changelog: every fact change on KeepYourSpreadsheet", "Public log of every price, rule and deadline check on KeepYourSpreadsheet.",
-     f"""<h1>Changelog</h1><h2>14 Oct 2026 — version 1 launched</h2><ul>
+     f"""<h1>Changelog</h1><h2>15 Oct 2026: daily check</h2><ul>
+<li>Re-checked on vendor pages, no changes found: aligned.tax, flonancial, suiteSheets (year-end return still "coming soon" at £15), My Tax Digital (homepage still says "currently voluntary"), 123 Sheets (still no price on homepage), Clear Books, FreeAgent (Mettle/NatWest).</li>
+<li>Re-checked on GOV.UK, no changes found: start dates and thresholds, 2026/27 deadlines, "HMRC does not provide software", "HMRC does not recommend any product".</li>
+<li>Penalties page rewritten from GOV.UK's page for people required to use MTD (it previously relied on the volunteers page): 4-point threshold, one point per deadline, late payment penalty rates for 2026/27 and 2027/28, the 30-day first-year period, and how points are removed.</li>
+<li>Compare page: added the number of bridging products in HMRC's software finder (78, of which 22 have a free version, on 15 Oct 2026).</li>
+<li>Updated the "Choose the right software" GOV.UK link to its current address, and tool pages now link straight to HMRC's software finder.</li></ul><h2>14 Oct 2026 — version 1 launched</h2><ul>
 <li>Checked on vendor pages: aligned.tax, flonancial, suiteSheets, My Tax Digital, 123 Sheets, Clear Books, FreeAgent (Mettle/NatWest).</li>
 <li>Checked on GOV.UK: start dates and thresholds, 2026/27 deadlines, penalties (volunteers page), "HMRC does not provide software".</li>
 <li>Not published because we could not verify on the vendor's own page today: 123 Sheets price; Xero, QuickBooks, Sage, Starling, Monzo, Coconut, Zoho, Pandle, QuickFile, VitalTax, Landlord Studio and others.</li>
@@ -189,8 +206,8 @@ for path, title, desc, body, faq in pages:
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, "index.html"), "w").write(render(path, title, desc, body, faq))
 open(os.path.join(OUT, "404.html"), "w").write(render("/404", "Page not found", "Page not found", "<h1>Page not found</h1><p><a href='/'>Go to the home page</a></p>", None))
-open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p[0]}</loc><lastmod>2026-10-14</lastmod></url>" for p in pages) + "</urlset>\n")
+open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p[0]}</loc><lastmod>2026-10-15</lastmod></url>" for p in pages) + "</urlset>\n")
 open(os.path.join(OUT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
-llms = f"# {NAME}\n\n> Independent UK guide to Making Tax Digital for Income Tax for sole traders and landlords who want to keep using a spreadsheet. Facts last checked {CHECKED}. Not tax advice.\n\n## Key facts (from GOV.UK)\n- Start dates: over £50,000 qualifying income from 6 April 2026; over £30,000 from 6 April 2027; over £20,000 from 6 April 2028. Qualifying income is turnover before expenses.\n- 2026/27 quarterly updates due 7 Aug 2026, 7 Nov 2026, 7 Feb 2027, 7 May 2027; tax return by 31 Jan 2028.\n- HMRC does not provide its own MTD software.\n- No penalty points for late quarterly updates in 2026/27.\n\n## Pages\n" + "".join(f"- [{t}]({BASE}{p}): {d}\n" for p, t, d, b, f in pages)
+llms = f"# {NAME}\n\n> Independent UK guide to Making Tax Digital for Income Tax for sole traders and landlords who want to keep using a spreadsheet. Facts last checked {CHECKED}. Not tax advice.\n\n## Key facts (from GOV.UK)\n- Start dates: over £50,000 qualifying income from 6 April 2026; over £30,000 from 6 April 2027; over £20,000 from 6 April 2028. Qualifying income is turnover before expenses.\n- 2026/27 quarterly updates due 7 Aug 2026, 7 Nov 2026, 7 Feb 2027, 7 May 2027; tax return by 31 Jan 2028.\n- HMRC does not provide its own MTD software.\n- No penalties for late quarterly updates in 2026/27. From then, the penalty point threshold is 4 points (£200 penalty) for people required to use MTD.\n\n## Pages\n" + "".join(f"- [{t}]({BASE}{p}): {d}\n" for p, t, d, b, f in pages)
 open(os.path.join(OUT, "llms.txt"), "w").write(llms)
 print("built", len(pages), "pages ->", OUT)

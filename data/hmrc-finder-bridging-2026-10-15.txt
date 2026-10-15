@@ -1,0 +1,78 @@
+"untied"
+#GoFile
+1 1 MTD Bridge
+100PcMTD
+123 e-Filing MTD for Income Tax
+123 Sheets
+@1TaxFiler
+@Taxd MTD
+AATAX
+Ablegatio Ftax MTD for IT
+AbraTax MTD for Income Tax
+Abridge (MTD for Excel/Sheets)
+Absolute Excel Income Tax Filer
+AccountsDesk
+Acctax (Online) Ltd
+Acorah Software Products Ltd (TaxCalc)
+Acxite
+Affordable MTD
+Aligned.tax MTD for Spreadsheets
+Andica MTD ITSA Software
+ANNA Self Assessment
+ApariPro
+ApariSolo
+Avona
+Basetax – Making Tax Digital for Income Tax
+Bosh
+Capium Limited — MTD for IT
+CHM ITSA BRIDGE
+Clients Assistant
+Coconut
+Coconut Free
+Cuppa
+Deductic MTD
+DIY Tax
+FileThat!
+flonancial
+Forbes MTD
+GetGround
+Hammock for landlords
+HyperTax
+iFiler
+KinderStart: Childminding App
+Landlord Studio
+LandlordFile
+MTD 4 Income Tax
+MTD Companion for iPhone & iPad
+MTD Companion for macOS
+MTD Sheets
+MTDone
+MTDsorted
+My Tax Digital (Free)
+Neevii
+Nexus by Landlord Studio
+NJT Tax Return Manager
+Nomi
+Otis Tax
+Pandle
+Property Income eReturn
+Provestor for Landlords
+Quarterwise
+Qyon Software Ltd
+RentalBux
+RentalBux Free
+Self Assessment Direct
+Simple File for Excel Users
+Simple Tax Flow
+SimplifyMTD
+suiteSheets
+Tax Mouse
+TaxBridge UK MTD by Amelia GB
+TaxHeaven
+TaxNav
+Taxtool for Income Tax
+TaxUpdates
+Taxzap
+VitalTax
+VT Software
+WaterLily MTD Bridge
