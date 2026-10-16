@@ -5,7 +5,7 @@ BASE = (sys.argv[1] if len(sys.argv) > 1 else "https://example.invalid").rstrip(
 from urllib.parse import urlparse
 PREFIX = urlparse(BASE).path.rstrip("/")  # e.g. /keepyourspreadsheet on GitHub project pages
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
-CHECKED = "15 Oct 2026"
+CHECKED = "16 Oct 2026"
 NAME = "KeepYourSpreadsheet"
 
 def src(url, label=None):
@@ -99,17 +99,27 @@ TOOLS = [
               "No transaction limits and works for CIS subcontractors (vendor's list).",
               "The paid Sole Trader plan (£5/month plus VAT) adds bank feeds, receipt scanning and invoicing.",
               "Property Free covers one property's MTD filings at no cost, per the vendor."]),
+ dict(slug="taxupdates", name="TaxUpdates", url="https://taxupdates.co.uk/", kind="Bridging", price="Free for individuals doing their own tax; agents free up to 10 clients",
+      free=True, files="CSV upload (adapt your own spreadsheet or use their free Google Sheets templates)", yearend="Vendor says year-end filing is included; HMRC's finder lists tax returns as 'Ready now'",
+      extra=("https://taxupdates.co.uk/guide/index", "TaxUpdates: How to use this site"),
+      points=["Vendor says the site is free to use as an individual dealing with your own tax. Tax agents can manage up to 10 clients free, and more with a subscription.",
+              "Vendor says it files quarterly business updates and year-end information, including other income and gains.",
+              "Uploads must be in CSV format. You can paste HMRC's category names into a new sheet in your existing spreadsheet, or use one of the vendor's free Google Sheets templates (self-employment, UK property, foreign property).",
+              "Vendor's guide says each quarterly update is cumulative, so you submit year-to-date totals each time.",
+              "You can also record transactions inside TaxUpdates instead of uploading, up to 1,200 transactions per business per tax year (vendor's limit).",
+              "The vendor says the earliest tax year with full functionality is 2026-27, and your Government Gateway account must be signed up for MTD first (it can take around 72 hours to update).",
+              "HMRC's software finder lists it as bridging software with a free version, covering sole trader, UK property and foreign property income."]),
 ]
 
 for t in TOOLS:
-    body = f"<h1>{t['name']}: MTD for Income Tax review</h1>{DISCLAIMER}<table><tr><th>Type</th><td>{t['kind']}</td></tr><tr><th>Price</th><td>{t['price']}</td></tr><tr><th>Works with</th><td>{t['files']}</td></tr><tr><th>Year-end return</th><td>{t['yearend']}</td></tr></table><h2>What we verified</h2><ul>" + "".join(f"<li>{html.escape(p)}</li>" for p in t["points"]) + f"</ul>{src(t['url'], t['name'] + ' (vendor page)')}<p>Always confirm a product appears in <a href='{GOV_FINDER}'>HMRC's software finder</a> before signing up.</p><p><a href='/compare/'>← Compare all tools</a></p>"
+    body = f"<h1>{t['name']}: MTD for Income Tax review</h1>{DISCLAIMER}<table><tr><th>Type</th><td>{t['kind']}</td></tr><tr><th>Price</th><td>{t['price']}</td></tr><tr><th>Works with</th><td>{t['files']}</td></tr><tr><th>Year-end return</th><td>{t['yearend']}</td></tr></table><h2>What we verified</h2><ul>" + "".join(f"<li>{html.escape(p)}</li>" for p in t["points"]) + f"</ul>{src(t['url'], t['name'] + ' (vendor page)')}{src(*t['extra']) if t.get('extra') else ''}<p>Always confirm a product appears in <a href='{GOV_FINDER}'>HMRC's software finder</a> before signing up.</p><p><a href='/compare/'>← Compare all tools</a></p>"
     page(f"/tools/{t['slug']}/", f"{t['name']} for Making Tax Digital: price & features (checked {CHECKED})",
          f"{t['name']} for MTD Income Tax: {t['price']}. Verified on the vendor's own page {CHECKED}.", body)
 
 rows = "".join(f"<tr><td><a href='/tools/{t['slug']}/'>{t['name']}</a></td><td>{t['kind']}</td><td><span class='tag{'' if t['free'] else ' paid'}'>{'FREE' if t['free'] else 'PAID/?'}</span> {t['price']}</td><td>{t['files']}</td><td>{t['yearend']}</td><td><a href='{t['url']}' rel='nofollow noopener'>vendor page</a></td></tr>" for t in TOOLS)
 page("/compare/", "MTD bridging software compared: keep your spreadsheet (Oct 2026)",
      f"Side-by-side comparison of spreadsheet bridging tools and free plans for Making Tax Digital for Income Tax. Every price checked on the vendor's page on {CHECKED}.",
-     f"<h1>Keep your spreadsheet: MTD tools compared</h1>{DISCLAIMER}<p>Bridging software links the spreadsheet you already keep to HMRC. GOV.UK confirms you can keep using spreadsheets if you use software that links to them.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}<div class='tw'><table><tr><th>Tool</th><th>Type</th><th>Price</th><th>Works with</th><th>Year-end return</th><th>Source</th></tr>{rows}</table></div><p class='src'>All rows last checked {CHECKED} on each vendor's own page. Where we could not verify something, we say so rather than guess.</p><h2>How many bridging tools does HMRC list?</h2><p>On 15 Oct 2026, HMRC's software finder showed <strong>78</strong> products under \"Bridging software that connects to records\" for sole traders and landlords, and <strong>22</strong> of those when also filtered to \"Free version\". HMRC shows results in random order and does not recommend any of them. We add tools to the table above only after checking the vendor's own page.</p>{src(GOV_FINDER,'HMRC: Find software that works with Making Tax Digital for Income Tax')}",
+     f"<h1>Keep your spreadsheet: MTD tools compared</h1>{DISCLAIMER}<p>Bridging software links the spreadsheet you already keep to HMRC. GOV.UK confirms you can keep using spreadsheets if you use software that links to them.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}<div class='tw'><table><tr><th>Tool</th><th>Type</th><th>Price</th><th>Works with</th><th>Year-end return</th><th>Source</th></tr>{rows}</table></div><p class='src'>All rows last checked {CHECKED} on each vendor's own page. Where we could not verify something, we say so rather than guess.</p><h2>How many bridging tools does HMRC list?</h2><p>On 16 Oct 2026, HMRC's software finder showed <strong>78</strong> products under \"Bridging software that connects to records\" for sole traders and landlords, and <strong>22</strong> of those when also filtered to \"Free version\". HMRC shows results in random order and does not recommend any of them. We add tools to the table above only after checking the vendor's own page.</p>{src(GOV_FINDER,'HMRC: Find software that works with Making Tax Digital for Income Tax')}",
      [("Can I keep using a spreadsheet for Making Tax Digital?", "Yes. GOV.UK says you can continue to use spreadsheets, but you need software that links to them (bridging software) to send quarterly updates and your tax return."),
       ("What is bridging software?", "Software that connects your existing records, such as a spreadsheet, to HMRC so you can send quarterly updates without moving to full accounting software.")])
 
@@ -159,7 +169,7 @@ page("/does-hmrc-have-a-free-tool/", "Does HMRC have a free Making Tax Digital t
      "HMRC does not provide its own software for Making Tax Digital for Income Tax. GOV.UK confirms it. Here are verified free third-party options instead.",
      f"""<h1>Does HMRC have a free MTD tool?</h1><p><strong>No.</strong> GOV.UK says: “HMRC does not provide software”. You need third-party software that has been through HMRC's recognition process.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}
 <p>Some websites still say there is an HMRC free tool. That contradicts GOV.UK.</p><p>HMRC also says it “does not recommend any product or software provider”.</p>{src(GOV_SOFT,'GOV.UK: Choose the right software')}
-<h2>Free options we verified</h2><ul><li><a href="/tools/aligned-tax/">aligned.tax</a> (quarterly updates)</li><li><a href="/tools/flonancial/">flonancial</a></li><li><a href="/tools/my-tax-digital/">My Tax Digital</a></li><li><a href="/tools/clear-books-free/">Clear Books Sole Trader Free</a></li><li><a href="/free-via-bank/">FreeAgent through NatWest Group banks</a></li></ul>{DISCLAIMER}""",
+<h2>Free options we verified</h2><ul><li><a href="/tools/aligned-tax/">aligned.tax</a> (quarterly updates)</li><li><a href="/tools/flonancial/">flonancial</a></li><li><a href="/tools/my-tax-digital/">My Tax Digital</a></li><li><a href="/tools/taxupdates/">TaxUpdates</a> (quarterly updates and year-end, CSV upload)</li><li><a href="/tools/clear-books-free/">Clear Books Sole Trader Free</a></li><li><a href="/free-via-bank/">FreeAgent through NatWest Group banks</a></li></ul>{DISCLAIMER}""",
      [("Does HMRC provide free software for Making Tax Digital for Income Tax?", "No. GOV.UK states that HMRC does not provide software. You must use compatible third-party software, some of which is free."),
       ("Does HMRC recommend any MTD software?", "No. GOV.UK says HMRC does not recommend any product or software provider.")])
 
@@ -186,7 +196,11 @@ page("/about/", "About KeepYourSpreadsheet and our 'not tax advice' notice", "Wh
 <h2>Money</h2><p>There are no affiliate links or sponsors yet. If that changes, we'll label them clearly and it won't change what we list.</p><p>Spotted an error? Corrections are logged in the changelog. A contact address will be added soon.</p>""")
 
 page("/changelog/", "Changelog: every fact change on KeepYourSpreadsheet", "Public log of every price, rule and deadline check on KeepYourSpreadsheet.",
-     f"""<h1>Changelog</h1><h2>15 Oct 2026: daily check</h2><ul>
+     f"""<h1>Changelog</h1><h2>16 Oct 2026: daily check</h2><ul>
+<li>Added <a href="/tools/taxupdates/">TaxUpdates</a>, a free bridging tool listed in HMRC's software finder, after checking its own homepage and guide: free for individuals doing their own tax, CSV upload, quarterly updates and year-end filing.</li>
+<li>Re-checked on vendor pages, no changes found: aligned.tax, flonancial, suiteSheets (year-end return still in development at £15), My Tax Digital (homepage still says "currently voluntary"), 123 Sheets (still no price on homepage), Clear Books, FreeAgent (Mettle/NatWest).</li>
+<li>Re-checked GOV.UK: no new updates to the MTD for Income Tax guide, the software guidance, or either penalties page since our last check.</li>
+<li>HMRC's software finder still lists 78 bridging products for sole traders and landlords, 22 with a free version. No newly listed bridging tools since 15 Oct.</li></ul><h2>15 Oct 2026: daily check</h2><ul>
 <li>Re-checked on vendor pages, no changes found: aligned.tax, flonancial, suiteSheets (year-end return still "coming soon" at £15), My Tax Digital (homepage still says "currently voluntary"), 123 Sheets (still no price on homepage), Clear Books, FreeAgent (Mettle/NatWest).</li>
 <li>Re-checked on GOV.UK, no changes found: start dates and thresholds, 2026/27 deadlines, "HMRC does not provide software", "HMRC does not recommend any product".</li>
 <li>Penalties page rewritten from GOV.UK's page for people required to use MTD (it previously relied on the volunteers page): 4-point threshold, one point per deadline, late payment penalty rates for 2026/27 and 2027/28, the 30-day first-year period, and how points are removed.</li>
@@ -206,7 +220,7 @@ for path, title, desc, body, faq in pages:
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, "index.html"), "w").write(render(path, title, desc, body, faq))
 open(os.path.join(OUT, "404.html"), "w").write(render("/404", "Page not found", "Page not found", "<h1>Page not found</h1><p><a href='/'>Go to the home page</a></p>", None))
-open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p[0]}</loc><lastmod>2026-10-15</lastmod></url>" for p in pages) + "</urlset>\n")
+open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p[0]}</loc><lastmod>2026-10-16</lastmod></url>" for p in pages) + "</urlset>\n")
 open(os.path.join(OUT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
 llms = f"# {NAME}\n\n> Independent UK guide to Making Tax Digital for Income Tax for sole traders and landlords who want to keep using a spreadsheet. Facts last checked {CHECKED}. Not tax advice.\n\n## Key facts (from GOV.UK)\n- Start dates: over £50,000 qualifying income from 6 April 2026; over £30,000 from 6 April 2027; over £20,000 from 6 April 2028. Qualifying income is turnover before expenses.\n- 2026/27 quarterly updates due 7 Aug 2026, 7 Nov 2026, 7 Feb 2027, 7 May 2027; tax return by 31 Jan 2028.\n- HMRC does not provide its own MTD software.\n- No penalties for late quarterly updates in 2026/27. From then, the penalty point threshold is 4 points (£200 penalty) for people required to use MTD.\n\n## Pages\n" + "".join(f"- [{t}]({BASE}{p}): {d}\n" for p, t, d, b, f in pages)
 open(os.path.join(OUT, "llms.txt"), "w").write(llms)
