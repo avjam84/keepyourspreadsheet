@@ -5,13 +5,13 @@ BASE = (sys.argv[1] if len(sys.argv) > 1 else "https://example.invalid").rstrip(
 from urllib.parse import urlparse
 PREFIX = urlparse(BASE).path.rstrip("/")  # e.g. /keepyourspreadsheet on GitHub project pages
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
-CHECKED = "16 Oct 2026"
+CHECKED = "17 Oct 2026"
 NAME = "KeepYourSpreadsheet"
 
 def src(url, label=None):
     return f'<p class="src">Last checked {CHECKED}. Source: <a href="{url}" rel="nofollow noopener">{html.escape(label or url)}</a></p>'
 
-NAV = [("/", "Home"), ("/compare/", "Compare tools"), ("/deadlines/", "Deadlines"), ("/penalties/", "Penalties"),
+NAV = [("/", "Home"), ("/compare/", "Compare tools"), ("/deadlines/", "Deadlines"), ("/quarterly-updates/", "Quarterly updates"), ("/penalties/", "Penalties"),
        ("/does-hmrc-have-a-free-tool/", "Free HMRC tool?"), ("/free-via-bank/", "Free via your bank"), ("/changelog/", "Changelog")]
 
 pages = []  # (path, title, desc, body, faq)
@@ -54,7 +54,8 @@ def render(path, title, desc, body, faq):
 </body></html>"""
     return out.replace('href="/', f'href="{PREFIX}/').replace("href='/", f"href='{PREFIX}/")
 
-GOV_GUIDE = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/before-you-use-this-guide"
+GOV_GUIDE = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/using-making-tax-digital-for-income-tax-for-the-first-time"
+GOV_SEND = "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates"
 GOV_SOFT = "https://www.gov.uk/guidance/choose-the-right-software-for-making-tax-digital-for-income-tax"
 GOV_FINDER = "https://www.tax.service.gov.uk/find-making-tax-digital-income-tax-software/"
 GOV_PEN_REQ = "https://www.gov.uk/guidance/penalties-for-making-tax-digital-for-income-tax"
@@ -119,7 +120,7 @@ for t in TOOLS:
 rows = "".join(f"<tr><td><a href='/tools/{t['slug']}/'>{t['name']}</a></td><td>{t['kind']}</td><td><span class='tag{'' if t['free'] else ' paid'}'>{'FREE' if t['free'] else 'PAID/?'}</span> {t['price']}</td><td>{t['files']}</td><td>{t['yearend']}</td><td><a href='{t['url']}' rel='nofollow noopener'>vendor page</a></td></tr>" for t in TOOLS)
 page("/compare/", "MTD bridging software compared: keep your spreadsheet (Oct 2026)",
      f"Side-by-side comparison of spreadsheet bridging tools and free plans for Making Tax Digital for Income Tax. Every price checked on the vendor's page on {CHECKED}.",
-     f"<h1>Keep your spreadsheet: MTD tools compared</h1>{DISCLAIMER}<p>Bridging software links the spreadsheet you already keep to HMRC. GOV.UK confirms you can keep using spreadsheets if you use software that links to them.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}<div class='tw'><table><tr><th>Tool</th><th>Type</th><th>Price</th><th>Works with</th><th>Year-end return</th><th>Source</th></tr>{rows}</table></div><p class='src'>All rows last checked {CHECKED} on each vendor's own page. Where we could not verify something, we say so rather than guess.</p><h2>How many bridging tools does HMRC list?</h2><p>On 16 Oct 2026, HMRC's software finder showed <strong>78</strong> products under \"Bridging software that connects to records\" for sole traders and landlords, and <strong>22</strong> of those when also filtered to \"Free version\". HMRC shows results in random order and does not recommend any of them. We add tools to the table above only after checking the vendor's own page.</p>{src(GOV_FINDER,'HMRC: Find software that works with Making Tax Digital for Income Tax')}",
+     f"<h1>Keep your spreadsheet: MTD tools compared</h1>{DISCLAIMER}<p>Bridging software links the spreadsheet you already keep to HMRC. GOV.UK confirms you can keep using spreadsheets if you use software that links to them.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}<div class='tw'><table><tr><th>Tool</th><th>Type</th><th>Price</th><th>Works with</th><th>Year-end return</th><th>Source</th></tr>{rows}</table></div><p class='src'>All rows last checked {CHECKED} on each vendor's own page. Where we could not verify something, we say so rather than guess.</p><h2>How many bridging tools does HMRC list?</h2><p>On 17 Oct 2026, HMRC's software finder showed <strong>78</strong> products under \"Bridging software that connects to records\" for sole traders and landlords, and <strong>22</strong> of those when also filtered to \"Free version\". HMRC shows results in random order and does not recommend any of them. We add tools to the table above only after checking the vendor's own page.</p>{src(GOV_FINDER,'HMRC: Find software that works with Making Tax Digital for Income Tax')}",
      [("Can I keep using a spreadsheet for Making Tax Digital?", "Yes. GOV.UK says you can continue to use spreadsheets, but you need software that links to them (bridging software) to send quarterly updates and your tax return."),
       ("What is bridging software?", "Software that connects your existing records, such as a spreadsheet, to HMRC so you can send quarterly updates without moving to full accounting software.")])
 
@@ -133,7 +134,7 @@ page("/", "Making Tax Digital for sole traders: keep your spreadsheet | KeepYour
 <tr><td>2024 to 2025</td><td>more than £50,000</td><td>6 April 2026</td></tr><tr><td>2025 to 2026</td><td>more than £30,000</td><td>6 April 2027</td></tr><tr><td>2026 to 2027</td><td>more than £20,000</td><td>6 April 2028</td></tr></table>
 <p>Qualifying income is your total turnover from self-employment and property <strong>before expenses</strong>.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}
 <p>HMRC estimates around 1,077,000 more sole traders and landlords will need to use MTD from 6 April 2027.</p>{src(HMRC_PR,'HMRC press release, 5 Oct 2026')}
-<h2>Start here</h2><ul><li><a href="/compare/">Compare spreadsheet bridging tools</a></li><li><a href="/free-via-bank/">Get software free through your bank</a></li><li><a href="/deadlines/">All deadlines</a> · <a href="/penalties/">Penalties</a></li><li><a href="/does-hmrc-have-a-free-tool/">Does HMRC have a free tool?</a></li></ul>{DISCLAIMER}""",
+<h2>Start here</h2><ul><li><a href="/compare/">Compare spreadsheet bridging tools</a></li><li><a href="/free-via-bank/">Get software free through your bank</a></li><li><a href="/quarterly-updates/">How to send a quarterly update</a></li><li><a href="/deadlines/">All deadlines</a> · <a href="/penalties/">Penalties</a></li><li><a href="/does-hmrc-have-a-free-tool/">Does HMRC have a free tool?</a></li></ul>{DISCLAIMER}""",
      [("When do I have to start Making Tax Digital for Income Tax?", "It depends on qualifying income on an earlier return: over £50,000 (2024-25 return) from 6 April 2026, over £30,000 (2025-26 return) from 6 April 2027, over £20,000 (2026-27 return) from 6 April 2028, according to GOV.UK."),
       ("Is the threshold based on profit or turnover?", "Turnover. GOV.UK defines qualifying income as total turnover from self-employment and property income before expenses.")])
 
@@ -141,9 +142,34 @@ page("/deadlines/", "MTD for Income Tax deadlines 2026/27: quarterly update date
      "Making Tax Digital quarterly update deadlines for 2026/27: 7 Aug 2026, 7 Nov 2026, 7 Feb 2027, 7 May 2027, tax return by 31 Jan 2028. Checked against GOV.UK.",
      f"""<h1>MTD for Income Tax deadlines (2026/27)</h1><table><tr><th>What</th><th>Deadline</th></tr>
 <tr><td>First quarterly update</td><td>7 August 2026</td></tr><tr><td>Second quarterly update</td><td>7 November 2026</td></tr><tr><td>Third quarterly update</td><td>7 February 2027</td></tr><tr><td>Fourth quarterly update</td><td>7 May 2027</td></tr><tr><td>Tax return and pay your tax bill</td><td>31 January 2028</td></tr></table>
-<p>Quarterly updates are summaries of income and expenses, not tax returns. You send one for each sole trader business and property business.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}{DISCLAIMER}""",
+<p>Quarterly updates are summaries of income and expenses, not tax returns. You send one for each sole trader business and property business.</p><p>If your accounts run 1 April to 31 March, you can use calendar update periods instead, with the same deadlines. See <a href="/quarterly-updates/">how quarterly updates work</a>.</p>{src(GOV_GUIDE,'GOV.UK: Use Making Tax Digital for Income Tax')}{DISCLAIMER}""",
      [("When is the next MTD quarterly update due?", "The second quarterly update for 2026/27 is due by 7 November 2026, according to GOV.UK."),
       ("Is a quarterly update a tax return?", "No. GOV.UK says quarterly updates are totals of your self-employment and property income and expenses; they are summaries, not tax returns.")])
+
+page("/quarterly-updates/", "How to send an MTD quarterly update: standard vs calendar update periods",
+     "How Making Tax Digital quarterly updates work, from GOV.UK: year-to-date totals, standard (6 April) vs calendar (1 April) update periods, when you can send, nil updates and what happens after.",
+     f"""<h1>How MTD quarterly updates work</h1>{DISCLAIMER}
+<p>A quarterly update is a set of totals of your self-employment and property income and expenses. Your software adds up your digital records every 3 months and you send the totals to HMRC for each self-employment and property business you have. They are summaries, not tax returns, and you do not need to make any accounting or tax adjustments before sending one.</p>
+<h2>What HMRC receives</h2><ul><li>Totals for each income and expense category you used in your records. MTD uses the same categories as Self Assessment.</li><li>HMRC does not receive details of individual receipts or invoices.</li><li>If you use a spreadsheet, <a href="/compare/">bridging software</a> reads these totals from it and sends them.</li></ul>
+<h2>Each update covers the tax year so far</h2><p>Every quarterly update runs from the start of the tax year to the end of the update period, so your third update covers 6 April to 5 January (standard periods). This lets you correct your records, and the correction is picked up in your next update. If you had no income or expenses in a period, you must still send the update.</p>
+<h2>Standard or calendar update periods</h2><p>Your software uses standard update periods by default, which follow the tax year. If your accounting period runs from 1 April to 31 March, GOV.UK says you should use calendar update periods. The deadlines are the same either way.</p>
+<div class="tw"><table><tr><th>Standard period</th><th>Calendar period</th><th>Deadline</th></tr>
+<tr><td>6 April to 5 July</td><td>1 April to 30 June</td><td>7 August</td></tr>
+<tr><td>6 April to 5 October</td><td>1 April to 30 September</td><td>7 November</td></tr>
+<tr><td>6 April to 5 January</td><td>1 April to 31 December</td><td>7 February</td></tr>
+<tr><td>6 April to 5 April</td><td>1 April to 31 March</td><td>7 May (the following tax year)</td></tr></table></div>
+<div class="notice"><strong>Choose before your first update.</strong> To switch to calendar update periods you need to select this in your software before you send your first quarterly update. After you send an update you cannot change your update periods for the rest of the tax year.</div>
+<h2>When you can send</h2><ul><li>Any time after the end of the update period, up to and including the deadline day.</li><li>Up to 10 days before the end of the period, if you do not expect to record any more transactions (for example, you are going on holiday).</li><li>More often if you like: most software lets you send on any day, but each update must still cover the full period from 6 April. For example, three updates covering 6 April to 5 May, 6 April to 5 June and 6 April to 5 July instead of one.</li></ul>
+<h2>After you send an update</h2><ul><li>The recent activity in your HMRC online account will say "You sent a quarterly update". Sign in with the details you used when you signed up for MTD.</li><li>You can see an estimate of your tax bill for the year so far in your software and your HMRC online account. HMRC adds information it already has, such as a student loan plan. It will be less accurate if you have other income HMRC does not know about yet, or if your accounting period does not match the tax year.</li><li>Some software lets you add other income, such as savings interest, during the year. It is not part of your quarterly updates but improves the estimate.</li></ul>
+<h2>Jointly let property</h2><p>For jointly let properties you can include either income and expenses, or income only. If you leave the expenses out, you must report them after the tax year by resending your fourth quarterly update before you submit your tax return. Properties you own alone need both income and expenses in every update.</p>
+<h2>Late updates</h2><p>HMRC will not apply penalty points for late quarterly updates in the 2026 to 2027 tax year, but you must send them before you can submit your tax return. From the following year, each missed deadline gets a point. See <a href="/penalties/">MTD penalties</a>.</p>
+<h2>Fixing mistakes after the fourth update</h2><p>You may need to resend your fourth quarterly update to correct an error, add expenses for jointly let property, or record Rent-a-Room income if you decide to claim the relief after the tax year ends. Do this before making any tax adjustments.</p>
+{src(GOV_SEND,'GOV.UK: Send quarterly updates (updated 16 Oct 2026)')}<p>Next deadline: <strong>7 November 2026</strong>. See <a href="/deadlines/">all deadlines</a>.</p>""",
+     [("What are calendar update periods for MTD?", "Quarterly periods that run from 1 April (ending 30 June, 30 September, 31 December and 31 March) instead of 6 April. GOV.UK says to use them if your accounting period is 1 April to 31 March. The deadlines are the same as standard periods."),
+      ("Can I change from standard to calendar update periods?", "Only before your first quarterly update of the tax year. GOV.UK says you select it in your software, and once you have sent an update you cannot change your update periods for the rest of that tax year."),
+      ("Do I have to send a quarterly update if I had no income?", "Yes. GOV.UK says that if you received no income and had no expenses in an update period, you must still send your quarterly update."),
+      ("Can I send an MTD quarterly update early?", "Yes, up to 10 days before the end of the update period if you do not expect to record any more transactions, according to GOV.UK."),
+      ("How do I know my quarterly update was received?", "GOV.UK says the recent activity in your HMRC online account will show 'You sent a quarterly update'.")])
 
 page("/penalties/", "MTD for Income Tax penalties 2026/27: points, £200 fines and late payment %",
      "Making Tax Digital penalties from GOV.UK: no penalties for late quarterly updates in 2026/27, a 4-point threshold with £200 fines, and late payment penalties of 3% or 4% plus 10% a year.",
@@ -196,7 +222,12 @@ page("/about/", "About KeepYourSpreadsheet and our 'not tax advice' notice", "Wh
 <h2>Money</h2><p>There are no affiliate links or sponsors yet. If that changes, we'll label them clearly and it won't change what we list.</p><p>Spotted an error? Corrections are logged in the changelog. A contact address will be added soon.</p>""")
 
 page("/changelog/", "Changelog: every fact change on KeepYourSpreadsheet", "Public log of every price, rule and deadline check on KeepYourSpreadsheet.",
-     f"""<h1>Changelog</h1><h2>16 Oct 2026: daily check</h2><ul>
+     f"""<h1>Changelog</h1><h2>17 Oct 2026: daily check</h2><ul>
+<li>GOV.UK updated its "Send quarterly updates" guidance on 16 Oct 2026, adding what happens after you send an update and how to change your update period. New page: <a href="/quarterly-updates/">how MTD quarterly updates work</a>, covering standard and calendar update periods, when you can send, and what HMRC receives. The deadlines page now mentions calendar update periods.</li>
+<li>Our main GOV.UK guide link now points straight to the current "Using Making Tax Digital for Income Tax for the first time" page (the old address redirected there).</li>
+<li>Re-checked on vendor pages, no changes found: aligned.tax, flonancial, suiteSheets, My Tax Digital, 123 Sheets (still no price on homepage), Clear Books, TaxUpdates, FreeAgent (Mettle/NatWest).</li>
+<li>Re-checked GOV.UK: no changes to the software guidance or either penalties page.</li>
+<li>HMRC's software finder still lists 78 bridging products for sole traders and landlords, 22 with a free version. No newly listed bridging tools since 16 Oct.</li></ul><h2>16 Oct 2026: daily check</h2><ul>
 <li>Added <a href="/tools/taxupdates/">TaxUpdates</a>, a free bridging tool listed in HMRC's software finder, after checking its own homepage and guide: free for individuals doing their own tax, CSV upload, quarterly updates and year-end filing.</li>
 <li>Re-checked on vendor pages, no changes found: aligned.tax, flonancial, suiteSheets (year-end return still in development at £15), My Tax Digital (homepage still says "currently voluntary"), 123 Sheets (still no price on homepage), Clear Books, FreeAgent (Mettle/NatWest).</li>
 <li>Re-checked GOV.UK: no new updates to the MTD for Income Tax guide, the software guidance, or either penalties page since our last check.</li>
@@ -220,7 +251,7 @@ for path, title, desc, body, faq in pages:
     os.makedirs(d, exist_ok=True)
     open(os.path.join(d, "index.html"), "w").write(render(path, title, desc, body, faq))
 open(os.path.join(OUT, "404.html"), "w").write(render("/404", "Page not found", "Page not found", "<h1>Page not found</h1><p><a href='/'>Go to the home page</a></p>", None))
-open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p[0]}</loc><lastmod>2026-10-16</lastmod></url>" for p in pages) + "</urlset>\n")
+open(os.path.join(OUT, "sitemap.xml"), "w").write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "".join(f"<url><loc>{BASE}{p[0]}</loc><lastmod>2026-10-17</lastmod></url>" for p in pages) + "</urlset>\n")
 open(os.path.join(OUT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")
 llms = f"# {NAME}\n\n> Independent UK guide to Making Tax Digital for Income Tax for sole traders and landlords who want to keep using a spreadsheet. Facts last checked {CHECKED}. Not tax advice.\n\n## Key facts (from GOV.UK)\n- Start dates: over £50,000 qualifying income from 6 April 2026; over £30,000 from 6 April 2027; over £20,000 from 6 April 2028. Qualifying income is turnover before expenses.\n- 2026/27 quarterly updates due 7 Aug 2026, 7 Nov 2026, 7 Feb 2027, 7 May 2027; tax return by 31 Jan 2028.\n- HMRC does not provide its own MTD software.\n- No penalties for late quarterly updates in 2026/27. From then, the penalty point threshold is 4 points (£200 penalty) for people required to use MTD.\n\n## Pages\n" + "".join(f"- [{t}]({BASE}{p}): {d}\n" for p, t, d, b, f in pages)
 open(os.path.join(OUT, "llms.txt"), "w").write(llms)
